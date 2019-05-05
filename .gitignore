@@ -1,0 +1,7 @@
+/Siproj
+/Debug
+/Release
+*.o
+*.log
+*.a
+
