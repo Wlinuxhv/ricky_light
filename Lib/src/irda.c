@@ -4,8 +4,8 @@
 #include "irDA.h"
 #include "ALL_Includes.h"
 
-#define IRDA_PORT GPIOC
-#define IRDA_PIN GPIO_PIN_7
+#define IRDA_PORT GPIOA
+#define IRDA_PIN GPIO_PIN_1
 
 volatile u8  Ir_Status=1;              //红外接收处理状态
 volatile u8  Ir_Receive_Count=0;       //红外接收数据位计数

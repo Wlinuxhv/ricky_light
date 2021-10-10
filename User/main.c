@@ -3,7 +3,12 @@
 //#include "irtn9.h"
 #include "irDA.h"
 #include "pwm.h"
-
+/* #define STM8S103 */		/*!< STM8S Low density devices */
+//USART1_RX PD5
+//USART1_TX PD6
+//LED PB5
+//PWM PC4
+//IRDA PA1
 
 #define PWM_CMP_MAX 10000
 #define PWM_CMP_80  8000
@@ -14,6 +19,21 @@
 #define PWM_CMP_30  3000
 #define PWM_CMP_20  2000
 #define PWM_CMP_10  1000
+typedef enum manaul_mode{
+	M_MODE_0 = 0,
+	M_MODE_1,
+	M_MODE_2, 
+	M_MODE_3, 
+	M_MODE_4, 
+	M_MODE_5, 
+	M_MODE_MAX = M_MODE_5,
+}e_Mode_t;
+
+
+
+
+
+
 
 extern void PWM_SetValue(uint16_t pwm);
 extern void PWM_Init(void);
@@ -75,53 +95,99 @@ void CLOCK_Config(u8 SYS_CLK)
 int main(void)
 {
 	int16_t duty = 0;
-	int16_t secs = 0;
+	int16_t secs = 0,mode_sec= 0 ;
 	uint8_t auto_pwm = 0;
 	uint8_t key_val = 0;
+	uint8_t mode = 0;
 	All_Congfig();
 	Uart1_Sendstr("+++++++++hardware init ok+++++++++\n");
 	delay_ms(1000);
 	Uart1_Sendstr("+++++++++single threads ok+++++++++\n");
 	while(1) 
     {
-		delay_ms(50);
-        secs = (secs++  >= 1000 )? 0 : secs ;
+		delay_ms(50); 
+        secs = (secs++ % 1000);
         key_val = 0;
 		if( Ir_receive_ok == 1 ) { //一帧红外数据接收完成
 			key_val = Ir_Process();
 			Ir_receive_ok=0;
 			//不同的遥控器面板对应不同的键值 0-9
-            //display_key(key_val); 
-            switch( key_val ) {
-                case VOL_Plus:
-                duty += 500;
-                duty =  duty >= PWM_CMP_MAX  ? PWM_CMP_MAX : duty;
-                PWM_SetValue(duty);
-                break;
+            //display_key(key_val);
+            if(KEY_8 == key_val){
+				mode = (mode++ % M_MODE_MAX);
+				mode_sec = secs;
+				continue;			
+			}
+			switch (key_val){
+				case KEY_0:
+					mode = M_MODE_0;
+					break;
+				case KEY_1:
+					mode = M_MODE_1;
+					break;
+				case KEY_2:
+					mode = M_MODE_2;
+					break;
+				case KEY_3:
+					mode = M_MODE_3;
+					break;
+			}
+			if(M_MODE_0==mode)
+			{
+				switch( key_val ) {
+					case VOL_Plus:
+					duty += 500;
+					duty =	duty >= PWM_CMP_MAX  ? PWM_CMP_MAX : duty;
+					PWM_SetValue(duty);
+					break;
+	
+					case VOL_Mins:
+					duty -= 500;
+					duty =	duty <= 0  ? 0 : duty;
+					PWM_SetValue(duty);
+					break;
+					
+					case PLAY_PAUSE:
+					duty = 0;
+					auto_pwm = 0;
+					PWM_SetValue(duty);
+					break;
+	
+					case EQ_KEY:
+					auto_pwm = auto_pwm == 1 ? 0 : 1;
+					break;
+				}
+			}
+			else if(M_MODE_1==mode)
+			{
+				switch( key_val ) {
+					case PLAY_PAUSE:
+						duty = PWM_CMP_MAX == duty ? 0 : PWM_CMP_MAX;
+						PWM_SetValue(duty);
+						break;
+				}
+			}else if(M_MODE_2==mode){
+			}else if(M_MODE_3==mode){
+			}else if(M_MODE_4==mode){
+			}else if(M_MODE_5==mode){
+        	}
+		}
+	
+		if(M_MODE_0==mode){
+			if(auto_pwm)
+			{
+				duty += 10;
+				duty =	duty >= PWM_CMP_60 ? PWM_CMP_60 : duty;
+				PWM_SetValue(duty);
+			}
+		}else if(M_MODE_1==mode){
 
-                case VOL_Mins:
-                duty -= 500;
-                duty =  duty <= 0  ? 0 : duty;
-                PWM_SetValue(duty);
-                break;
-                
-                case KEY_0:
-                duty = 0;
-                auto_pwm = 0;
-                PWM_SetValue(duty);
-                break;
+		}else if(M_MODE_2==mode){
+		}else if(M_MODE_3==mode){
+		}else if(M_MODE_4==mode){
+		}else if(M_MODE_5==mode){
+		}
 
-                case EQ_KEY:
-                auto_pwm = auto_pwm == 1 ? 0 : 1;
-                break;
-            }
-        }
-        if(auto_pwm)
-        {
-            duty += 10;
-            duty =  duty >= PWM_CMP_60 ? PWM_CMP_60 : duty;
-            PWM_SetValue(duty);
-        }
         if(!(secs%100)){
             printstr("duty:");
             printdec(duty);
