@@ -1,5 +1,5 @@
-#ifdef  __WL_PWM__
-#define __WL_PWM__
+#ifndef  __WL_PWM__
+#define  __WL_PWM__
 
 #include "ALL_Includes.h"
 
@@ -13,7 +13,7 @@
 #define PWM_CMP_20  2000
 #define PWM_CMP_10  1000
 
-extern void PWM_SetValue(uint16_t pwm);
-extern void PWM_Init(void);
+void PWM_SetValue(uint16_t pwm);
+void PWM_Init(void);
 
 #endif

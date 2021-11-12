@@ -1,6 +1,9 @@
-#ifndef WL_IRDA_H_
-#define WL_IRDA_H_
-#include "stm8s.h"
+#ifndef  _WL_IRDA_UI_
+#define  _WL_IRDA_UI_
+#include "ALL_Includes.h"
+
+#include "key.h"
+#include "pwm.h"
 
 #define CH_Mins 162
 #define CH_Midl 98
@@ -25,15 +28,8 @@
 #define KEY_9 82
 
 
-void IR_Init(void);
-void TIM_IT_Updata_Handdle(void);
-void Ir_Receive_Handler(void);
-u8 Ir_Process(void);
-void display_key(uint16_t key_val);
+#include "pwm.h"
+void ui_init(void);
+void ui_loop_routine(uint16_t key_val);
 
 #endif
-
-
-
-
-

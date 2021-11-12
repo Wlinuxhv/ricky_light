@@ -107,6 +107,8 @@ INTERRUPT_HANDLER(CLK_IRQHandler, 2)
   */
 }
 
+#include "ALL_Includes.h"
+
 /**
   * @brief External Interrupt PORTA Interrupt routine.
   * @param  None
@@ -117,6 +119,7 @@ INTERRUPT_HANDLER(EXTI_PORTA_IRQHandler, 3)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+  Ir_Receive_Handler(); 
 }
 
 /**
@@ -131,9 +134,6 @@ INTERRUPT_HANDLER(EXTI_PORTB_IRQHandler, 4)
   */
 }
 
-#include "irDA.h"
-#include "ALL_Includes.h"
-
 /**
   * @brief External Interrupt PORTC Interrupt routine.
   * @param  None
@@ -146,10 +146,10 @@ INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
   */
   //IR_rx();
   //disableInterrupts();
-  Ir_Receive_Handle(); 
+  //Ir_Receive_Handle(); 
   //enableInterrupts();
 
-  debug = (debug + 1)%255;
+  g_debug = (g_debug + 1)%255;
 }
 
 /**
@@ -227,8 +227,6 @@ INTERRUPT_HANDLER(SPI_IRQHandler, 10)
      it is recommended to set a breakpoint on the following instruction.
   */
 }
-
-#include "irDA.h"
 
 /**
   * @brief Timer1 Update/Overflow/Trigger/Break Interrupt routine.

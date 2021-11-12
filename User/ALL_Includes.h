@@ -6,7 +6,24 @@
 #include "led.h"
 #include "delay.h"
 
-extern uint8_t debug;
+#include "USART.h"
+#include "oled.h"
+//#include "bmp.h"
+#include "spi.h"
+#include "RF24L01.h"
+#include "ui.h"
+
+//#include "irtn9.h"
+#include "irDA.h"
+#include "pwm.h"
+/* #define STM8S103 */      /*!< STM8S Low density devices */
+//USART1_RX PD5
+//USART1_TX PD6
+//LED PB5
+//PWM PC4
+//IRDA PA1
+
+extern uint8_t g_debug;
 
 //#define IRDA     C7
 //#define LED      B5  //FIXED
@@ -14,6 +31,10 @@ extern uint8_t debug;
 //#define TN9_ACQ  D1
 //#define TN9_CLK  D2
 //#define TN9_DATA D3
+
+//#define OLED_SCL  D1
+//#define OLED_SDA  A2
+
 //#define UART1 TX D5
 //#define UART1 RX D6
 /*    
